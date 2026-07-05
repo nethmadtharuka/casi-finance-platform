@@ -39,3 +39,10 @@ logging:
   level:
     root: INFO
     com.casi: DEBUG
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: 86400000
+  cors:
+    frontend-origin: ${FRONTEND_ORIGIN:http://localhost:5173}

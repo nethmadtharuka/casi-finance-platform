@@ -1,0 +1,102 @@
+name: CI
+
+# Per Part 14: build/test on every push to any branch, plus PRs into main/develop.
+# No deploy job yet - that's wired up once Railway/Render/Vercel are actually
+# provisioned; this is intentionally just the "build + test" half for now.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  backend:
+    name: Backend Build & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: casi-backend
+
+    # Postgres service so Flyway migrations + any future @SpringBootTest /
+    # repository integration tests have a real database to run against.
+    # No integration tests exist yet (per Sprint 1), so this is forward-looking -
+    # it just means Sprint 2's tests won't need a CI change to start working.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: casi
+          POSTGRES_USER: casi_user
+          POSTGRES_PASSWORD: casi_dev_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_URL: jdbc:postgresql://localhost:5432/casi
+      DB_USER: casi_user
+      DB_PASSWORD: casi_dev_password
+      # CI-only dummy secret - never the real one, never committed to a real .env.
+      JWT_SECRET: raXhI6+vEmP3pzRrhCFcMJd7FbFQ+N/beyzRbuFT0jI=
+      FRONTEND_ORIGIN: http://localhost:5173
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build and run tests
+        run: mvn --batch-mode clean verify
+
+  frontend:
+    name: Frontend Build & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Frontend doesn't exist yet (Sprint 1 was backend-only). This step lets
+      # the workflow succeed as a no-op now and activate automatically the
+      # moment casi-frontend/package.json is committed - no CI file edit needed.
+      - name: Check whether frontend project exists yet
+        id: check
+        run: |
+          if [ -f "casi-frontend/package.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "No casi-frontend/package.json yet - skipping frontend job for now."
+          fi
+
+      - name: Set up Node 20
+        if: steps.check.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: casi-frontend/package-lock.json
+
+      - name: Install dependencies
+        if: steps.check.outputs.exists == 'true'
+        working-directory: casi-frontend
+        run: npm ci
+
+      - name: Lint
+        if: steps.check.outputs.exists == 'true'
+        working-directory: casi-frontend
+        run: npm run lint
+
+      - name: Build
+        if: steps.check.outputs.exists == 'true'
+        working-directory: casi-frontend
+        run: npm run build

@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: casi-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/casi}
+    username: ${DB_USER:casi_user}
+    password: ${DB_PASSWORD:casi_dev_password}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway owns the schema (Part 10) - Hibernate must never auto-create/alter tables.
+      # "validate" checks entities match the DB schema on startup and fails fast if they don't.
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    com.casi: DEBUG

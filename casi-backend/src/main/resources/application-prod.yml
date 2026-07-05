@@ -1,0 +1,19 @@
+# Production overrides. Activate with: SPRING_PROFILES_ACTIVE=prod
+# Everything not overridden here falls back to application.yml.
+#
+# On Railway/Render, DB_URL will typically need "?sslmode=require" appended -
+# check your provider's connection string, since managed Postgres usually enforces TLS.
+
+spring:
+  jpa:
+    show-sql: false
+
+server:
+  error:
+    include-stacktrace: never
+    include-message: never
+
+logging:
+  level:
+    root: INFO
+    com.casi: INFO

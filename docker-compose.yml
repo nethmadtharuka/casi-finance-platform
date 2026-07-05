@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: casi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-casi}
+      POSTGRES_USER: ${DB_USER:-casi_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-casi_dev_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - casi_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-casi_user} -d ${DB_NAME:-casi}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  casi_postgres_data:
+    name: casi_postgres_data

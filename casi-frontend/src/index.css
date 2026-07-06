@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 97%;
+    --foreground: 211 30% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 211 30% 14%;
+    --muted: 210 16% 93%;
+    --muted-foreground: 211 12% 40%;
+    --primary: 165 42% 28%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 36 65% 47%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 5 48% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 15% 87%;
+    --ring: 165 42% 28%;
+  }
+
+  .dark {
+    --background: 213 26% 9%;
+    --foreground: 213 15% 92%;
+    --card: 213 24% 13%;
+    --card-foreground: 213 15% 92%;
+    --muted: 213 20% 18%;
+    --muted-foreground: 213 10% 65%;
+    --primary: 165 35% 45%;
+    --primary-foreground: 213 26% 9%;
+    --accent: 36 60% 55%;
+    --accent-foreground: 213 26% 9%;
+    --destructive: 5 55% 55%;
+    --destructive-foreground: 213 26% 9%;
+    --border: 211 20% 20%;
+    --ring: 165 35% 45%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Tabular numbers everywhere a monetary figure appears — a small ledger-like touch */
+  .figure {
+    font-family: '"IBM Plex Mono"', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}

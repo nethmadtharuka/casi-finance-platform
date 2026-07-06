@@ -1,11 +1,11 @@
 import { Outlet, NavLink } from 'react-router-dom'
-import { LayoutDashboard, Receipt, User } from 'lucide-react'
+import { LayoutDashboard, Plus, Receipt, User } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 
 // Part 15: bottom tab nav (Dashboard | History | Profile), mobile-first.
-// History and Profile pages are Sprint 4/5 scope — routes are wired here as
-// placeholders so the nav shell is complete now and just needs pages swapped in.
+// "Add Expense isn't a tab — it's a floating action button reachable from any
+// screen, reinforcing that adding an expense is the primary action."
 export default function AppLayout() {
   const user = useAuthStore((s) => s.user)
 
@@ -20,6 +20,14 @@ export default function AppLayout() {
       <main className="flex-1 px-5 py-6 pb-24">
         <Outlet />
       </main>
+
+      <NavLink
+        to="/expenses/new"
+        aria-label="Add expense"
+        className="fixed bottom-20 right-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <Plus size={26} strokeWidth={2.25} />
+      </NavLink>
 
       <nav className="fixed bottom-0 left-0 right-0 border-t border-border bg-card">
         <div className="mx-auto flex max-w-md justify-around">

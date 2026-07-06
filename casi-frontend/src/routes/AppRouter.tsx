@@ -4,7 +4,10 @@ import AppLayout from '@/layouts/AppLayout'
 import ProtectedRoute from '@/routes/ProtectedRoute'
 import LoginPage from '@/pages/LoginPage'
 import RegisterPage from '@/pages/RegisterPage'
-import DashboardPlaceholder from '@/pages/DashboardPlaceholder'
+import DashboardPage from '@/pages/DashboardPage'
+import AddExpensePage from '@/pages/AddExpensePage'
+import ExpenseHistoryPage from '@/pages/ExpenseHistoryPage'
+import ProfilePlaceholder from '@/pages/ProfilePlaceholder'
 
 export default function AppRouter() {
   return (
@@ -18,8 +21,11 @@ export default function AppRouter() {
       {/* Authenticated shell — everything under here requires a valid token */}
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<DashboardPlaceholder />} />
-          {/* /history and /profile land here in Sprint 4/5 */}
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/history" element={<ExpenseHistoryPage />} />
+          <Route path="/profile" element={<ProfilePlaceholder />} />
+          <Route path="/expenses/new" element={<AddExpensePage />} />
+          <Route path="/expenses/:id/edit" element={<AddExpensePage />} />
         </Route>
       </Route>
 
